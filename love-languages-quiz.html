@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Do You Love? — A Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1b2a;
+    --surface: #1a2d42;
+    --surface2: #243d58;
+    --accent1: #f4a261;
+    --accent2: #e76f51;
+    --accent3: #a8dadc;
+    --text: #e8f4f8;
+    --text-muted: #8baab8;
+    --card-bg: #162030;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Starfield */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 80% 55%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 60%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 40%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 48% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 72% 5%, rgba(255,255,255,0.5) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SCREENS */
+  .screen { display: none; animation: fadeUp 0.5s ease forwards; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* INTRO */
+  .intro-header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+  }
+
+  .intro-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 1rem;
+  }
+
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.2rem);
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .intro-title em {
+    color: var(--accent1);
+    font-style: italic;
+  }
+
+  .intro-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 1.2rem 0 2rem;
+    line-height: 1.6;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .notice-box {
+    background: rgba(168, 218, 220, 0.08);
+    border: 1px solid rgba(168, 218, 220, 0.25);
+    border-radius: 12px;
+    padding: 1.1rem 1.4rem;
+    margin: 1.5rem 0 2rem;
+    font-size: 0.88rem;
+    color: var(--accent3);
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  .notice-box strong { color: var(--text); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.9rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 24px rgba(244, 162, 97, 0.3);
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(244, 162, 97, 0.45);
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-bottom: 2rem;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent1));
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+
+  /* QUESTION CARD */
+  .question-number {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent1);
+    margin-bottom: 0.8rem;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.15rem, 3vw, 1.4rem);
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 1.8rem;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .option-btn {
+    background: var(--card-bg);
+    border: 1.5px solid var(--surface2);
+    border-radius: 14px;
+    padding: 1.1rem 1.4rem;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(244,162,97,0.08), rgba(168,218,220,0.06));
+    opacity: 0;
+    transition: opacity 0.18s;
+  }
+
+  .option-btn:hover {
+    border-color: var(--accent1);
+    transform: translateX(4px);
+    color: var(--text);
+  }
+
+  .option-btn:hover::before { opacity: 1; }
+
+  .option-btn.selected {
+    border-color: var(--accent1);
+    background: linear-gradient(135deg, rgba(244,162,97,0.15), rgba(231,111,81,0.1));
+    transform: translateX(4px);
+  }
+
+  .option-letter {
+    display: inline-block;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: var(--surface2);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.6rem;
+    margin-right: 0.7rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    vertical-align: middle;
+    transition: background 0.18s, color 0.18s;
+  }
+
+  .option-btn.selected .option-letter,
+  .option-btn:hover .option-letter {
+    background: var(--accent1);
+    color: #fff;
+  }
+
+  /* RESULTS */
+  .result-header {
+    text-align: center;
+    padding: 2rem 0 1rem;
+  }
+
+  .result-symbol {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  .result-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 0.5rem;
+  }
+
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    color: var(--accent1);
+    margin-bottom: 0.3rem;
+  }
+
+  .result-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .result-description {
+    background: var(--card-bg);
+    border: 1px solid var(--surface2);
+    border-radius: 16px;
+    padding: 1.4rem 1.6rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .secondary-block {
+    background: rgba(168,218,220,0.06);
+    border: 1px solid rgba(168,218,220,0.2);
+    border-radius: 16px;
+    padding: 1.2rem 1.6rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .secondary-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 0.4rem;
+  }
+
+  .secondary-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .secondary-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .note-box {
+    background: rgba(244, 162, 97, 0.07);
+    border-left: 3px solid var(--accent1);
+    border-radius: 0 12px 12px 0;
+    padding: 1rem 1.3rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .note-box strong { color: var(--accent1); }
+
+  .comeback-instruction {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(244,162,97,0.12), rgba(168,218,220,0.08));
+    border: 1px solid rgba(244,162,97,0.3);
+    border-radius: 16px;
+    padding: 1.4rem;
+    margin-top: 1rem;
+  }
+
+  .comeback-instruction p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .comeback-instruction small {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .scores-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 1.2rem 0;
+  }
+
+  .score-chip {
+    background: var(--surface);
+    border-radius: 50px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .score-chip.top {
+    background: linear-gradient(135deg, rgba(244,162,97,0.2), rgba(231,111,81,0.15));
+    color: var(--accent1);
+    border: 1px solid rgba(244,162,97,0.3);
+  }
+
+  .score-chip.second {
+    background: rgba(168,218,220,0.1);
+    color: var(--accent3);
+    border: 1px solid rgba(168,218,220,0.25);
+  }
+
+  .btn-restart {
+    background: transparent;
+    border: 1.5px solid var(--surface2);
+    color: var(--text-muted);
+    border-radius: 50px;
+    padding: 0.65rem 1.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    margin-top: 1.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-restart:hover {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 1.5rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- INTRO SCREEN -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-header">
+      <div class="intro-eyebrow">A short quiz</div>
+      <h1 class="intro-title">How do<br>you <em>love?</em></h1>
+      <p class="intro-subtitle">30 quick questions. No right answers. Just a little window into how you connect with the people around you.</p>
+    </div>
+
+    <div class="notice-box">
+      <strong>⚠️ Quick heads-up:</strong> This quiz is based on Gary Chapman's <em>Five Love Languages</em> — it's a useful idea, but it's <strong>not science</strong>. Think of it like a map: helpful for navigation, but the real territory is always more interesting. Your result is a starting point, not a verdict.
+    </div>
+
+    <div style="text-align:center; margin-top: 1rem;">
+      <button class="btn-primary" onclick="startQuiz()">Let's go →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="progress-label">Question 1 of 30</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-number" id="q-number">Question 1</div>
+    <div class="question-text" id="q-text"></div>
+    <div class="options" id="q-options"></div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="screen-results">
+    <div class="result-header">
+      <div class="result-symbol" id="res-symbol"></div>
+      <div class="result-eyebrow">Your primary love language</div>
+      <h2 class="result-title" id="res-title"></h2>
+      <div class="result-subtitle" id="res-subtitle"></div>
+    </div>
+
+    <div class="scores-row" id="scores-row"></div>
+
+    <div class="result-description" id="res-description"></div>
+
+    <div class="secondary-block" id="secondary-block">
+      <div class="secondary-label">Your secondary language</div>
+      <div class="secondary-name" id="sec-name"></div>
+      <div class="secondary-desc" id="sec-desc"></div>
+    </div>
+
+    <div class="note-box">
+      <strong>Remember:</strong> These two languages are your starting point — not your whole story. Most people use all five at different times, with different people.
+    </div>
+
+    <div class="comeback-instruction">
+      <p>📝 Note down your top two, then come back to the call!</p>
+      <small>Your primary: <strong id="note-primary"></strong> &nbsp;·&nbsp; Secondary: <strong id="note-secondary"></strong></small>
+    </div>
+
+    <button class="btn-restart" onclick="restart()">↺ Take it again</button>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  { text: "Which fits you better?", a: { text: "I like to spend one-on-one time with people.", symbol: "♫" }, b: { text: "I feel loved when someone gives practical help to me.", symbol: "☆" } },
+  { text: "Which fits you better?", a: { text: "I like it when people give me gifts.", symbol: "♢" }, b: { text: "I really enjoy hanging out with people close to me.", symbol: "♫" } },
+  { text: "Which fits you better?", a: { text: "I feel loved when someone I'm close to puts an arm around me.", symbol: "☀" }, b: { text: "I feel loved when I receive a gift from someone I'm close to.", symbol: "♢" } },
+  { text: "Which fits you better?", a: { text: "Gifts are symbols of love that are important to me.", symbol: "♢" }, b: { text: "I feel loved when people show support and encouragement.", symbol: "⬛" } },
+  { text: "Which fits you better?", a: { text: "I like to spend time with friends and family.", symbol: "♫" }, b: { text: "I like to receive little gifts from friends and family.", symbol: "♢" } },
+  { text: "Which fits you better?", a: { text: "Words of acceptance mean a lot to me.", symbol: "⬛" }, b: { text: "I know someone loves me when they help me.", symbol: "☆" } },
+  { text: "Which fits you better?", a: { text: "I like to receive affirming notes and texts.", symbol: "⬛" }, b: { text: "I like to be hugged.", symbol: "☀" } },
+  { text: "Which fits you better?", a: { text: "I like being with friends and family and doing activities together.", symbol: "♫" }, b: { text: "I like it when kind words are spoken to me.", symbol: "⬛" } },
+  { text: "Which fits you better?", a: { text: "What someone does affects me more than what they say.", symbol: "☆" }, b: { text: "Hugs make me feel connected and valued.", symbol: "☀" } },
+  { text: "Which fits you better?", a: { text: "I value praise and try to avoid criticism.", symbol: "⬛" }, b: { text: "Several small gifts mean more to me than one large gift.", symbol: "♢" } },
+  { text: "Which fits you better?", a: { text: "I feel close to someone when we're talking or doing something together.", symbol: "♫" }, b: { text: "I feel closer to people when they touch me often.", symbol: "☀" } },
+  { text: "Which fits you better?", a: { text: "I appreciate when people compliment my achievements.", symbol: "⬛" }, b: { text: "I know people love me when they do things for me they don't enjoy doing.", symbol: "☆" } },
+  { text: "Which fits you better?", a: { text: "I like when my friends and family greet me with a hug.", symbol: "☀" }, b: { text: "I like it when people listen to me and show genuine interest in what I'm saying.", symbol: "♫" } },
+  { text: "Which fits you better?", a: { text: "I feel loved when friends and family help me with tasks or projects.", symbol: "☆" }, b: { text: "I really enjoy receiving gifts from friends and family.", symbol: "♢" } },
+  { text: "Which fits you better?", a: { text: "I enjoy when people compliment my appearance.", symbol: "⬛" }, b: { text: "I feel loved when people take time to understand my feelings.", symbol: "♫" } },
+  { text: "Which fits you better?", a: { text: "I feel secure when someone close to me is touching me.", symbol: "☀" }, b: { text: "Acts of service make me feel loved.", symbol: "☆" } },
+  { text: "Which fits you better?", a: { text: "I appreciate the many little things that people do for me.", symbol: "☆" }, b: { text: "I value gifts that people make for me.", symbol: "♢" } },
+  { text: "Which fits you better?", a: { text: "I really enjoy one-on-one undivided attention.", symbol: "♫" }, b: { text: "I really enjoy it when someone does an act of service for me.", symbol: "☆" } },
+  { text: "Which fits you better?", a: { text: "I feel loved when people touch me.", symbol: "☀" }, b: { text: "I feel loved when people do things to help me.", symbol: "☆" } },
+  { text: "Which fits you better?", a: { text: "For my birthday, I feel loved when I receive a gift.", symbol: "♢" }, b: { text: "For my birthday, I feel loved when someone speaks meaningful words to me.", symbol: "⬛" } },
+  { text: "Which fits you better?", a: { text: "I know someone is thinking of me when they give me a gift.", symbol: "♢" }, b: { text: "I feel loved when someone helps me with my chores.", symbol: "☆" } },
+  { text: "Which fits you better?", a: { text: "I like to go places with people I'm close to.", symbol: "♫" }, b: { text: "When I like someone, I like making physical contact (hug, high-five, etc).", symbol: "☀" } },
+  { text: "Which fits you better?", a: { text: "I appreciate it when people listen patiently and don't interrupt me.", symbol: "♫" }, b: { text: "I appreciate it when someone remembers special days with a gift.", symbol: "♢" } },
+  { text: "Which fits you better?", a: { text: "I like knowing people care enough to help with my daily tasks.", symbol: "☆" }, b: { text: "I enjoy full-day adventures or trips with someone close to me.", symbol: "♫" } },
+  { text: "Which fits you better?", a: { text: "Getting a hug from someone close makes me feel loved.", symbol: "☀" }, b: { text: "Receiving a gift for no special reason makes me feel loved.", symbol: "♢" } },
+  { text: "Which fits you better?", a: { text: "I like to be told that I'm appreciated.", symbol: "⬛" }, b: { text: "I like when people look at me when we're talking.", symbol: "♫" } },
+  { text: "Which fits you better?", a: { text: "I like to sit close to people I enjoy being with.", symbol: "☀" }, b: { text: "I appreciate when someone tells me how much I mean to them.", symbol: "⬛" } },
+  { text: "Which fits you better?", a: { text: "Gifts from people I'm close to are always special to me.", symbol: "♢" }, b: { text: "I feel good when someone I'm close to touches me warmly.", symbol: "☀" } },
+  { text: "Which fits you better?", a: { text: "I feel loved when someone enthusiastically does a task I've requested.", symbol: "☆" }, b: { text: "I feel loved when I'm told how much I'm appreciated.", symbol: "⬛" } },
+  { text: "Which fits you better?", a: { text: "Physical touch is something I need every day.", symbol: "☀" }, b: { text: "Words of support and encouragement are something I need every day.", symbol: "⬛" } },
+];
+
+const languages = {
+  "⬛": {
+    name: "Words of Affirmation",
+    emoji: "💬",
+    short: "You thrive on kind words, genuine compliments, and encouragement.",
+    description: "If this is your language, words carry enormous weight. A genuine compliment lifts you up, and harsh words can linger long after they're said. You feel most loved when someone tells you — specifically and sincerely — what they appreciate about you. It's not about flattery: it's about feeling truly seen and valued through language."
+  },
+  "☆": {
+    name: "Acts of Service",
+    emoji: "🤝",
+    short: "You feel cared for when people lighten your load without being asked.",
+    description: "For you, actions really do speak louder than words. When someone helps you — fixes something, makes dinner, takes a task off your plate without being asked — you feel genuinely loved. Broken promises or laziness can hurt more than an unkind word. The magic phrase for you might just be: \"Let me do that.\""
+  },
+  "♢": {
+    name: "Receiving Gifts",
+    emoji: "🎁",
+    short: "It's not about stuff — it's about the thought and intention behind it.",
+    description: "This one often gets misunderstood. It's not about materialism — it's about what a gift represents: someone thought of you, made an effort, remembered something. The perfect gift doesn't have to be expensive; it just has to feel intentional. A forgotten birthday or a thoughtless present can feel like a real rejection. A small, thoughtful gesture can mean the world."
+  },
+  "☀": {
+    name: "Physical Touch",
+    emoji: "🤗",
+    short: "Warmth, presence, and physical connection make you feel safe and loved.",
+    description: "You're someone for whom physical presence matters deeply. A hug at the right moment, sitting close to someone you care about, a pat on the back — these aren't just nice gestures, they're how you feel genuinely connected and secure. Emotional distance or being left out of physical warmth can feel isolating, even if nothing was \"said.\""
+  },
+  "♫": {
+    name: "Quality Time",
+    emoji: "⏳",
+    short: "You feel most loved when someone gives you their full, undivided attention.",
+    description: "It's not just about being in the same room — it's about really being there. Phone away, eyes on you, genuinely interested. You feel most connected when someone chooses to spend time with you and means it. Cancelled plans or distracted conversations can sting more than you'd expect. Being truly present with someone is the greatest gift you can give to a Quality Time person."
+  }
+};
+
+const symbolOrder = ["⬛", "☆", "♢", "☀", "♫"];
+let scores = {};
+let currentQ = 0;
+let answers = [];
+
+function startQuiz() {
+  scores = { "⬛": 0, "☆": 0, "♢": 0, "☀": 0, "♫": 0 };
+  currentQ = 0;
+  answers = [];
+  showScreen("screen-quiz");
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => {
+    s.classList.remove("active");
+    s.style.display = "none";
+  });
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  // Trigger reflow for animation
+  void el.offsetWidth;
+  el.classList.add("active");
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const total = questions.length;
+  const pct = Math.round((currentQ / total) * 100);
+
+  document.getElementById("progress-label").textContent = `Question ${currentQ + 1} of ${total}`;
+  document.getElementById("progress-pct").textContent = `${pct}%`;
+  document.getElementById("progress-fill").style.width = `${pct}%`;
+  document.getElementById("q-number").textContent = `Question ${currentQ + 1}`;
+  document.getElementById("q-text").textContent = q.text;
+
+  const opts = document.getElementById("q-options");
+  opts.innerHTML = "";
+
+  [{ label: "A", ...q.a }, { label: "B", ...q.b }].forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerHTML = `<span class="option-letter">${opt.label}</span>${opt.text}`;
+    btn.onclick = () => selectAnswer(opt.symbol, btn);
+    opts.appendChild(btn);
+  });
+}
+
+function selectAnswer(symbol, btn) {
+  // Visual feedback
+  document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+
+  // Score
+  if (symbol.includes("☆") && symbol.includes("♫")) {
+    scores["☆"]++; scores["♫"]++;
+  } else {
+    scores[symbol]++;
+  }
+
+  answers.push(symbol);
+
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ >= questions.length) {
+      showResults();
+    } else {
+      renderQuestion();
+    }
+  }, 280);
+}
+
+function showResults() {
+  // Sort scores
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const [topSymbol, topScore] = sorted[0];
+  const [secSymbol] = sorted[1];
+
+  const top = languages[topSymbol];
+  const sec = languages[secSymbol];
+
+  document.getElementById("res-symbol").textContent = top.emoji;
+  document.getElementById("res-title").textContent = top.name;
+  document.getElementById("res-subtitle").textContent = top.short;
+  document.getElementById("res-description").textContent = top.description;
+
+  document.getElementById("sec-name").textContent = `${sec.emoji} ${sec.name}`;
+  document.getElementById("sec-desc").textContent = sec.short;
+
+  document.getElementById("note-primary").textContent = top.name;
+  document.getElementById("note-secondary").textContent = sec.name;
+
+  // Score chips
+  const row = document.getElementById("scores-row");
+  row.innerHTML = "";
+  sorted.forEach(([sym, score], i) => {
+    const lang = languages[sym];
+    const chip = document.createElement("div");
+    chip.className = `score-chip${i === 0 ? " top" : i === 1 ? " second" : ""}`;
+    chip.innerHTML = `${lang.emoji} ${lang.name.split(" ")[0]} <strong>${score}</strong>`;
+    row.appendChild(chip);
+  });
+
+  showScreen("screen-results");
+}
+
+function restart() {
+  showScreen("screen-intro");
+}
+</script>
+</body>
+</html>
