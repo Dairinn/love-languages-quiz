@@ -235,7 +235,8 @@
 
   .option-letter {
     display: inline-block;
-    width: 1.6rem;
+    width: 2rem;
+    font-size: 1.1em;
     height: 1.6rem;
     border-radius: 50%;
     background: var(--surface2);
@@ -262,11 +263,58 @@
     padding: 2rem 0 1rem;
   }
 
-  .result-symbol {
-    font-size: 4rem;
-    margin-bottom: 0.5rem;
+  .symbols-reveal {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    margin: 2rem 0;
+  }
+
+  .symbol-card {
+    flex: 1;
+    max-width: 200px;
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 2rem 1.2rem;
+    text-align: center;
+    border: 1.5px solid var(--surface2);
+  }
+
+  .symbol-primary {
+    border-color: var(--accent1);
+    background: linear-gradient(135deg, rgba(244,162,97,0.12), rgba(231,111,81,0.08));
+  }
+
+  .symbol-secondary {
+    border-color: var(--accent3);
+    background: rgba(168,218,220,0.07);
+  }
+
+  .symbol-glyph {
+    font-size: 3.5rem;
+    margin-bottom: 0.6rem;
     animation: pulse 2s ease-in-out infinite;
   }
+
+  .symbol-rank {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .symbol-score {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--accent1);
+  }
+
+  .symbol-secondary .symbol-score {
+    color: var(--accent3);
+  }
+
+  
 
   @keyframes pulse {
     0%, 100% { transform: scale(1); }
@@ -467,29 +515,19 @@
   <!-- RESULTS SCREEN -->
   <div class="screen" id="screen-results">
     <div class="result-header">
-      <div class="result-symbol" id="res-symbol"></div>
-      <div class="result-eyebrow">Your primary love language</div>
-      <h2 class="result-title" id="res-title"></h2>
-      <div class="result-subtitle" id="res-subtitle"></div>
+      <div class="result-eyebrow">You're done!</div>
+      <h2 class="result-title">Your symbols</h2>
+      <div class="result-subtitle">Here's what you earned — we'll find out what they mean together.</div>
     </div>
 
-    <div class="scores-row" id="scores-row"></div>
-
-    <div class="result-description" id="res-description"></div>
-
-    <div class="secondary-block" id="secondary-block">
-      <div class="secondary-label">Your secondary language</div>
-      <div class="secondary-name" id="sec-name"></div>
-      <div class="secondary-desc" id="sec-desc"></div>
-    </div>
+    <div class="symbols-reveal" id="symbols-reveal"></div>
 
     <div class="note-box">
-      <strong>Remember:</strong> These two languages are your starting point — not your whole story. Most people use all five at different times, with different people.
+      <strong>Write these down</strong> — we'll decode them together on the call.
     </div>
 
     <div class="comeback-instruction">
-      <p>📝 Note down your top two, then come back to the call!</p>
-      <small>Your primary: <strong id="note-primary"></strong> &nbsp;·&nbsp; Secondary: <strong id="note-secondary"></strong></small>
+      <p>📝 Note down your top two symbols, then come back to the call!</p>
     </div>
 
     <button class="btn-restart" onclick="restart()">↺ Take it again</button>
@@ -499,36 +537,26 @@
 
 <script>
 const questions = [
-  { text: "Which fits you better?", a: { text: "I like to spend one-on-one time with people.", symbol: "♫" }, b: { text: "I feel loved when someone gives practical help to me.", symbol: "☆" } },
-  { text: "Which fits you better?", a: { text: "I like it when people give me gifts.", symbol: "♢" }, b: { text: "I really enjoy hanging out with people close to me.", symbol: "♫" } },
-  { text: "Which fits you better?", a: { text: "I feel loved when someone I'm close to puts an arm around me.", symbol: "☀" }, b: { text: "I feel loved when I receive a gift from someone I'm close to.", symbol: "♢" } },
-  { text: "Which fits you better?", a: { text: "Gifts are symbols of love that are important to me.", symbol: "♢" }, b: { text: "I feel loved when people show support and encouragement.", symbol: "⬛" } },
-  { text: "Which fits you better?", a: { text: "I like to spend time with friends and family.", symbol: "♫" }, b: { text: "I like to receive little gifts from friends and family.", symbol: "♢" } },
-  { text: "Which fits you better?", a: { text: "Words of acceptance mean a lot to me.", symbol: "⬛" }, b: { text: "I know someone loves me when they help me.", symbol: "☆" } },
-  { text: "Which fits you better?", a: { text: "I like to receive affirming notes and texts.", symbol: "⬛" }, b: { text: "I like to be hugged.", symbol: "☀" } },
-  { text: "Which fits you better?", a: { text: "I like being with friends and family and doing activities together.", symbol: "♫" }, b: { text: "I like it when kind words are spoken to me.", symbol: "⬛" } },
-  { text: "Which fits you better?", a: { text: "What someone does affects me more than what they say.", symbol: "☆" }, b: { text: "Hugs make me feel connected and valued.", symbol: "☀" } },
-  { text: "Which fits you better?", a: { text: "I value praise and try to avoid criticism.", symbol: "⬛" }, b: { text: "Several small gifts mean more to me than one large gift.", symbol: "♢" } },
-  { text: "Which fits you better?", a: { text: "I feel close to someone when we're talking or doing something together.", symbol: "♫" }, b: { text: "I feel closer to people when they touch me often.", symbol: "☀" } },
-  { text: "Which fits you better?", a: { text: "I appreciate when people compliment my achievements.", symbol: "⬛" }, b: { text: "I know people love me when they do things for me they don't enjoy doing.", symbol: "☆" } },
-  { text: "Which fits you better?", a: { text: "I like when my friends and family greet me with a hug.", symbol: "☀" }, b: { text: "I like it when people listen to me and show genuine interest in what I'm saying.", symbol: "♫" } },
-  { text: "Which fits you better?", a: { text: "I feel loved when friends and family help me with tasks or projects.", symbol: "☆" }, b: { text: "I really enjoy receiving gifts from friends and family.", symbol: "♢" } },
-  { text: "Which fits you better?", a: { text: "I enjoy when people compliment my appearance.", symbol: "⬛" }, b: { text: "I feel loved when people take time to understand my feelings.", symbol: "♫" } },
-  { text: "Which fits you better?", a: { text: "I feel secure when someone close to me is touching me.", symbol: "☀" }, b: { text: "Acts of service make me feel loved.", symbol: "☆" } },
-  { text: "Which fits you better?", a: { text: "I appreciate the many little things that people do for me.", symbol: "☆" }, b: { text: "I value gifts that people make for me.", symbol: "♢" } },
-  { text: "Which fits you better?", a: { text: "I really enjoy one-on-one undivided attention.", symbol: "♫" }, b: { text: "I really enjoy it when someone does an act of service for me.", symbol: "☆" } },
-  { text: "Which fits you better?", a: { text: "I feel loved when people touch me.", symbol: "☀" }, b: { text: "I feel loved when people do things to help me.", symbol: "☆" } },
-  { text: "Which fits you better?", a: { text: "For my birthday, I feel loved when I receive a gift.", symbol: "♢" }, b: { text: "For my birthday, I feel loved when someone speaks meaningful words to me.", symbol: "⬛" } },
-  { text: "Which fits you better?", a: { text: "I know someone is thinking of me when they give me a gift.", symbol: "♢" }, b: { text: "I feel loved when someone helps me with my chores.", symbol: "☆" } },
-  { text: "Which fits you better?", a: { text: "I like to go places with people I'm close to.", symbol: "♫" }, b: { text: "When I like someone, I like making physical contact (hug, high-five, etc).", symbol: "☀" } },
-  { text: "Which fits you better?", a: { text: "I appreciate it when people listen patiently and don't interrupt me.", symbol: "♫" }, b: { text: "I appreciate it when someone remembers special days with a gift.", symbol: "♢" } },
-  { text: "Which fits you better?", a: { text: "I like knowing people care enough to help with my daily tasks.", symbol: "☆" }, b: { text: "I enjoy full-day adventures or trips with someone close to me.", symbol: "♫" } },
-  { text: "Which fits you better?", a: { text: "Getting a hug from someone close makes me feel loved.", symbol: "☀" }, b: { text: "Receiving a gift for no special reason makes me feel loved.", symbol: "♢" } },
-  { text: "Which fits you better?", a: { text: "I like to be told that I'm appreciated.", symbol: "⬛" }, b: { text: "I like when people look at me when we're talking.", symbol: "♫" } },
-  { text: "Which fits you better?", a: { text: "I like to sit close to people I enjoy being with.", symbol: "☀" }, b: { text: "I appreciate when someone tells me how much I mean to them.", symbol: "⬛" } },
-  { text: "Which fits you better?", a: { text: "Gifts from people I'm close to are always special to me.", symbol: "♢" }, b: { text: "I feel good when someone I'm close to touches me warmly.", symbol: "☀" } },
-  { text: "Which fits you better?", a: { text: "I feel loved when someone enthusiastically does a task I've requested.", symbol: "☆" }, b: { text: "I feel loved when I'm told how much I'm appreciated.", symbol: "⬛" } },
-  { text: "Which fits you better?", a: { text: "Physical touch is something I need every day.", symbol: "☀" }, b: { text: "Words of support and encouragement are something I need every day.", symbol: "⬛" } },
+  { text: "What would you rather hear?", a: { text: "Give me a hug!", symbol: "☀" }, b: { text: "You're terrific!", symbol: "⬛" } },
+  { text: "What would you rather hear?", a: { text: "I've got a special birthday present for you!", symbol: "♢" }, b: { text: "I'll help you with your project.", symbol: "☆" } },
+  { text: "What would you rather hear?", a: { text: "Let's go to a movie.", symbol: "♫" }, b: { text: "Give me a high-five!", symbol: "☀" } },
+  { text: "What would you rather hear?", a: { text: "You are so smart!", symbol: "⬛" }, b: { text: "Have you made your Christmas list yet?", symbol: "♢" } },
+  { text: "What would you rather hear?", a: { text: "Would you help me cook dinner?", symbol: "♫☆" }, b: { text: "I like going to fun places with you.", symbol: "♫⬛" } },
+  { text: "What would you rather hear?", a: { text: "Give me a kiss!", symbol: "☀" }, b: { text: "You are number 1!", symbol: "⬛" } },
+  { text: "What would you rather hear?", a: { text: "I've got a surprise for you!", symbol: "♢" }, b: { text: "We can make something really cool together.", symbol: "☆" } },
+  { text: "What would you rather hear?", a: { text: "Let's watch TV together.", symbol: "♫" }, b: { text: "Tag, you're it!", symbol: "☀" } },
+  { text: "What would you rather hear?", a: { text: "You did a great job!", symbol: "⬛" }, b: { text: "You've earned a special surprise!", symbol: "♢" } },
+  { text: "What would you rather hear?", a: { text: "You can invite your friends.", symbol: "☆" }, b: { text: "Let's go to your favourite restaurant.", symbol: "☆♫" } },
+  { text: "What would you rather hear?", a: { text: "I'm going to give you a big hug!", symbol: "☀" }, b: { text: "You're pretty awesome, kid.", symbol: "⬛" } },
+  { text: "What would you rather hear?", a: { text: "I made your favourite food.", symbol: "☆" }, b: { text: "I've checked your homework, and it looks pretty great!", symbol: "⬛" } },
+  { text: "What would you rather hear?", a: { text: "You are fun to hang out with. Let's meet up again soon.", symbol: "♫⬛" }, b: { text: "I'll race you!", symbol: "☀" } },
+  { text: "What would you rather hear?", a: { text: "Wow, you did it!", symbol: "⬛" }, b: { text: "Check under your desk for a special present.", symbol: "♢" } },
+  { text: "What would you rather hear?", a: { text: "I cleaned up your room for you.", symbol: "☆" }, b: { text: "Let's play a game together.", symbol: "♫" } },
+  { text: "What would you rather hear?", a: { text: "Would you like for me to scratch your back?", symbol: "☆☀" }, b: { text: "You can do it! Don't give up!", symbol: "⬛" } },
+  { text: "What would you rather hear?", a: { text: "What would you like for your birthday?", symbol: "♢" }, b: { text: "We can pick up your friend on the way to the movie.", symbol: "☆♫" } },
+  { text: "What would you rather hear?", a: { text: "I always like doing stuff with you.", symbol: "♫⬛" }, b: { text: "You're so huggable!", symbol: "☀" } },
+  { text: "What would you rather hear?", a: { text: "How did you know how to do that? You're brilliant!", symbol: "⬛" }, b: { text: "I can't wait to give you your present!", symbol: "♢" } },
+  { text: "What would you rather hear?", a: { text: "Don't worry! I'll pick you up on time!", symbol: "☆" }, b: { text: "Let's spend a whole day doing something you want!", symbol: "♫" } },
 ];
 
 const languages = {
@@ -606,7 +634,7 @@ function renderQuestion() {
   [{ label: "A", ...q.a }, { label: "B", ...q.b }].forEach(opt => {
     const btn = document.createElement("button");
     btn.className = "option-btn";
-    btn.innerHTML = `<span class="option-letter">${opt.label}</span>${opt.text}`;
+    btn.innerHTML = `<span class="option-letter">${opt.symbol}</span>${opt.text}`;
     btn.onclick = () => selectAnswer(opt.symbol, btn);
     opts.appendChild(btn);
   });
@@ -617,12 +645,9 @@ function selectAnswer(symbol, btn) {
   document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
   btn.classList.add("selected");
 
-  // Score
-  if (symbol.includes("☆") && symbol.includes("♫")) {
-    scores["☆"]++; scores["♫"]++;
-  } else {
-    scores[symbol]++;
-  }
+  // Score — handle any combination of symbols
+  const allSymbols = ["⬛", "☆", "♢", "☀", "♫"];
+  allSymbols.forEach(s => { if (symbol.includes(s)) scores[s]++; });
 
   answers.push(symbol);
 
@@ -637,34 +662,20 @@ function selectAnswer(symbol, btn) {
 }
 
 function showResults() {
-  // Sort scores
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  const [topSymbol, topScore] = sorted[0];
-  const [secSymbol] = sorted[1];
 
-  const top = languages[topSymbol];
-  const sec = languages[secSymbol];
+  const reveal = document.getElementById("symbols-reveal");
+  reveal.innerHTML = "";
 
-  document.getElementById("res-symbol").textContent = top.emoji;
-  document.getElementById("res-title").textContent = top.name;
-  document.getElementById("res-subtitle").textContent = top.short;
-  document.getElementById("res-description").textContent = top.description;
-
-  document.getElementById("sec-name").textContent = `${sec.emoji} ${sec.name}`;
-  document.getElementById("sec-desc").textContent = sec.short;
-
-  document.getElementById("note-primary").textContent = top.name;
-  document.getElementById("note-secondary").textContent = sec.name;
-
-  // Score chips
-  const row = document.getElementById("scores-row");
-  row.innerHTML = "";
-  sorted.forEach(([sym, score], i) => {
-    const lang = languages[sym];
-    const chip = document.createElement("div");
-    chip.className = `score-chip${i === 0 ? " top" : i === 1 ? " second" : ""}`;
-    chip.innerHTML = `${lang.emoji} ${lang.name.split(" ")[0]} <strong>${score}</strong>`;
-    row.appendChild(chip);
+  sorted.slice(0, 2).forEach(([sym, score], i) => {
+    const card = document.createElement("div");
+    card.className = `symbol-card${i === 0 ? " symbol-primary" : " symbol-secondary"}`;
+    card.innerHTML = `
+      <div class="symbol-glyph">${sym}</div>
+      <div class="symbol-rank">${i === 0 ? "Primary" : "Secondary"}</div>
+      <div class="symbol-score">${score} / 20</div>
+    `;
+    reveal.appendChild(card);
   });
 
   showScreen("screen-results");
