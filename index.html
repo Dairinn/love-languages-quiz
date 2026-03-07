@@ -321,6 +321,13 @@
     50% { transform: scale(1.08); }
   }
 
+  .brand-heart {
+    color: #D0232A;
+    font-size: 0.85em;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
   .result-eyebrow {
     font-size: 0.75rem;
     letter-spacing: 0.2em;
@@ -482,8 +489,8 @@
   <div class="screen active" id="screen-intro">
     <div class="intro-header">
       <div class="intro-eyebrow">A short quiz</div>
-      <h1 class="intro-title">How do<br>you <em>love?</em></h1>
-      <p class="intro-subtitle">30 quick questions. No right answers. Just a little window into how you connect with the people around you.</p>
+      <h1 class="intro-title"><span class="brand-heart">♥</span> How do<br>you <em>love?</em></h1>
+      <p class="intro-subtitle">20 quick questions. No right answers. Just a little window into how you connect with the people around you.</p>
     </div>
 
     <div class="notice-box">
@@ -515,7 +522,7 @@
   <!-- RESULTS SCREEN -->
   <div class="screen" id="screen-results">
     <div class="result-header">
-      <div class="result-eyebrow">You're done!</div>
+      <div class="result-eyebrow">You're done! <span class="brand-heart">♥</span></div>
       <h2 class="result-title">Your symbols</h2>
       <div class="result-subtitle">Here's what you earned — we'll find out what they mean together.</div>
     </div>
